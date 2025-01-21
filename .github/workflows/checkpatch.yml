@@ -19,5 +19,11 @@ jobs:
         sudo apt-get install patchutils python3-ply python3-git
 
     - name: Run checkpatch
+      continue-on-error: true
+      id: checkpatch
+      env:
+        BASE_REF: ${{ github.base_ref }}
       run: |
-        ./scripts/checkpatch.pl --git FETCH_HEAD..HEAD
+        export ZEPHYR_BASE=$PWD
+        git rebase origin/${BASE_REF}
+        ./scripts/checkpatch.pl --git origin/${BASE_REF}..
